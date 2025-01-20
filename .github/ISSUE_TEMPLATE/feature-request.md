@@ -45,7 +45,7 @@ There are no known Primero API limits for # of records, but there is API paging 
 For each new Workflow, describe the business process to be automated and its objectives. 
 
 - **Workflow Diagram**: {add link to diagram describing each step & logic}
-- **Mapping Specs**: {add link to mapping specifications - in most cases you will have 1 spec per WF Step)
+- **Mapping Specs**: {add link to field-level mapping specifications - in most cases you will have 1 spec per WF Step)
 - **API Docs:** {add links to relevant API & system documentation}
 
 ### Trigger
