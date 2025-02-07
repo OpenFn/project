@@ -7,14 +7,14 @@
     "steps": [
       {
         "id": "get-data",
-        "adaptor": "postgresql@3.4.6",
-        "state": {},
+        "adaptor": "mssql@5.0.10",
+        "state": {
+          "lastSync": "2025-01-01T00:00:00.000Z"
+        },
         "configuration": "./tmp/db-credential.json",
-        "expression": "./jobs/1-getPatientData.js",
+        "expression": "get-data.js",
         "next": {
-          "post-data": {
-            "condition": "true"
-          }
+          "post-data": "!state.errors && state.patients.length > 0"
         }
       },
       {
@@ -22,7 +22,7 @@
         "adaptor": "http@latest",
         "configuration": "./tmp/api-credential.json",
         "state": {},
-        "expression": "./jobs/2-postData.js"
+        "expression": "post-data.js"
       }
     ]
   }
