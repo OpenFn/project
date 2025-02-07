@@ -1,6 +1,6 @@
 ---
 name: Feature request
-about: For new workflows or changes to existing workflows
+about: For new workflows & change requests
 title: ''
 labels: feature request
 assignees: ''
@@ -45,7 +45,7 @@ Create a workflow in which OpenFn will:
 - **Adaptor:** [PostgreSQL]
 - **Input**: [Link to sample input data]
 - **Collections (optional):** [Collection details if required]
-- **Credential (optional):** [Credential details if required]
+- **Credential (optional):** [Also specify If VPN Access is required]
 - **Desired Output:** [Description of the desired output]
 
 ### Step 2: Clean & transform the data according to the specified mapping rules
@@ -89,4 +89,5 @@ checked:
 - [ ] Mapping Spec: Ensure mapping specifications are complete and linked.
 - [ ] API Docs: Ensure all relevant API documentation is linked.
 - [ ] Workflow Diagrams: Ensure workflow diagrams are complete and linked.
+- [ ] VPN Access: Ensure VPN Access is provided if required to run the workflow
 - [ ] Toggl: Ensure the Toggl project name is provided.
