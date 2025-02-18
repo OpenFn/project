@@ -1,0 +1,1 @@
+post('patients', { body: $.patients });
