@@ -14,7 +14,7 @@ For example: [Insert use case here]
 
 ## The specific request, in as few words as possible
 
-A clear and concise description of what you want to happen.  
+A clear and concise summary of what you want to happen.  
 Things to include as needed:
 
 - Workflow Diagram: [Link to workflow diagram]
