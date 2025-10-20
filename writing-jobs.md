@@ -2,14 +2,28 @@
 
 ### What is an OpenFn Job?
 
-A Job is JavaScript code that performs a specific task like fetching data from
+A Job performs a specific task like fetching data from
 Salesforce, converting JSON to FHIR standard, or uploading data to a database.
+
 Each job uses exactly ONE adaptor (connector) that provides helper functions
 (Operations) for communicating with data sources.
 
+A job is a single step in a workflow - a series of steps which perform some high
+level business task, like synchronising patient data or aggregating form submissions
+or automating business processes.
+
+### JavaScript DSL
+
+Jobs are written in a Javascript-like DSL. The `$` symbol and top-level function
+calls are special, otherwise the language is the same.
+
+Top level function calls are called Operations. They automate the processing of state.
+
+The `$` symbol is syntactic sugar to reference state. It can only be used within
+an argument to an operation.
+
 ### State and Operations
 
-- Every job is a data transformation pipeline
 - Jobs take an input JavaScript object called **State** and execute
   **Operations** in series
 - Operations transform state sequentially - the output of one becomes the input
