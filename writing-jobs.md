@@ -2,25 +2,81 @@
 
 ### What is an OpenFn Job?
 
-A Job performs a specific task like fetching data from
-Salesforce, converting JSON to FHIR standard, or uploading data to a database.
+A Job performs a specific task like fetching data from Salesforce, converting
+JSON to FHIR standard, or uploading data to a database.
 
 Each job uses exactly ONE adaptor (connector) that provides helper functions
 (Operations) for communicating with data sources.
 
 A job is a single step in a workflow - a series of steps which perform some high
-level business task, like synchronising patient data or aggregating form submissions
-or automating business processes.
+level business task, like synchronising patient data or aggregating form
+submissions or automating business processes.
 
 ### JavaScript DSL
 
-Jobs are written in a Javascript-like DSL. The `$` symbol and top-level function
-calls are special, otherwise the language is the same.
+Jobs are written in a JavaScript-like Domain Specific Language (DSL). While it
+looks and feels like regular JavaScript, there are some important differences:
 
-Top level function calls are called Operations. They automate the processing of state.
+#### Similarities to JavaScript
 
-The `$` symbol is syntactic sugar to reference state. It can only be used within
-an argument to an operation.
+- Uses standard JavaScript syntax and features (variables, functions, objects,
+  etc.)
+- Supports modern JavaScript patterns like arrow functions, destructuring, etc.
+- Can use most of standard JavaScript built-ins (e.g., `console.log()`). Note:
+  some features are not supported(e.g., `eval`). See full list here
+  (docs-link)//TODO
+
+#### Key Differences
+
+- Operations (like `get()`, `post()`, `each()`) are special functions that
+  manage state and async behavior
+- Operations must be called at the top level - they can't be nested inside other
+  functions
+- The `$` symbol is a special operator for accessing state (not a jQuery-like
+  library)
+- All asynchronous behavior must be handled through Operations, not Promises or
+  async/await
+- Job execution is sequential - each Operation completes before the next begins
+
+For example, this looks like regular JavaScript but works differently:
+
+```javascript
+// This looks like regular JavaScript Promise chaining
+// but is actually using OpenFn's special Operation chaining
+get('/data')
+  .then(state => {
+    console.log(state.data);
+    return state;
+  })
+  .catch(error => {
+    console.log('Failed:', error);
+  });
+
+// This looks like array iteration but is a special Operation
+each('$.data[*]', state => {
+  // This callback transforms state but doesn't control the iteration
+  return state;
+});
+
+// Error handling with .catch()
+get('patients').catch((error, state) => {
+  state.error = error;
+  console.log('Error occurred:', error);
+  return state; // Continue execution
+  // OR
+  throw error; // Stop execution
+});
+
+// Repeated operations using each()
+each(
+  $.items,
+  post(`patient/${$.data.id}`, $.data).then(state => {
+    state.completed ??= [];
+    state.completed.push(state.data);
+    return state;
+  })
+);
+```
 
 ### State and Operations
 
@@ -211,30 +267,46 @@ cursor('now');
 
 ### 5. Promise-like Operations (.then() and .catch())
 
+OpenFn Operations provide `.then()` and `.catch()` methods to handle successful
+results and errors in your job execution. These special Operation methods works
+at the top level only.
+
+#### .then()
+
+Use `.then()` to handle successful Operation results:
+
 ```javascript
-// Using .then()
-get($.data.url).then(state => {
-  console.log(state);
-  return state;
-});
-
-// Error handling with .catch()
-get('patients').catch((error, state) => {
-  state.error = error;
-  console.log('Error occurred:', error);
-  return state; // Continue execution
-  // OR
-  throw error; // Stop execution
-});
-
-// Useful with each()
-each(
-  $.items,
-  post(`patient/${$.data.id}`, $.data).then(state => {
-    state.completed.push(state.data);
+get('/api/data')
+  .then(state => {
+    // Transform or process the response
+    state.processedData = processData(state.data);
     return state;
   })
-);
+  .then(state => {
+    // Chain multiple transformations
+    console.log('Processed:', state.processedData);
+    return state;
+  });
+```
+
+#### .catch()
+
+Use `.catch()` to handle errors:
+
+```javascript
+get('/api/data')
+  .then(state => {
+    // Transform or process the response
+    state.processedData = processData(state.data);
+    return state;
+  })
+  .catch(error => {
+    // Handle errors
+    console.log('Error:', error);
+    return state; // Continue execution
+    // OR
+    throw error; // Stop execution
+  });
 ```
 
 ### 6. Cleaning Final State
@@ -254,59 +326,41 @@ fn(state => {
 });
 ```
 
-### 7. Using Credential Secrets
-
-```javascript
-post('/api/v1/auth/login', {
-  body: {
-    username: $.configuration.username,
-    password: $.configuration.password,
-  },
-  headers: { 'content-type': 'application/json' },
-});
-```
-
 ## Adaptors and Functions
 
-### Common Operations (from @openfn/language-common)
+### What is an Adaptor?
 
-- `fn(callback)` - Execute arbitrary JavaScript
-- `each(jsonPath, operation)` - Iterate over arrays
-- `cursor(value, options)` - Manage cursor state
-- `dataValue(path)` - Extract data from state
+An open-source module providing a set of functions that help you perform actions
+in a particular system or technology.
 
-### HTTP Adaptor
+### How do I use an Adaptor?
 
-```javascript
+Each job uses an adaptor to perform actions in a particular system or
+technology.
+
+For example, the HTTP adaptor provides functions for making HTTP requests:
+
+```js
 get('/endpoint');
-get('/endpoint', { query: { id: $.data.id } });
 post('/endpoint', $.data);
-put('/endpoint/:id', $.data);
-delete '/endpoint/:id';
 ```
 
-### Database Operations (e.g., PostgreSQL)
+### Adaptor functions
 
-```javascript
-sql(state => `SELECT * FROM patients WHERE id = ${state.patientId}`);
-insert('patients', $.data);
-upsert('patients', 'id', $.data);
+You can find a list of available adaptors here:
+https://docs.openfn.org/adaptors. Each adaptor has a set of functions with
+examples. Also you can use CLI to see documentation for an adaptor:
+
+```bash
+// Show all http adaptor functions
+openfn docs http
 ```
 
-### DHIS2 Adaptor
+For more details on a specfic functions, use:
 
-```javascript
-create('dataValueSets', $.data);
-get('dataElements', { filter: 'name:like:ANC' });
-update('organisationUnits', $.orgUnitId, $.data);
-```
-
-### Salesforce Adaptor
-
-```javascript
-create('Account', $.data);
-upsert('Contact', 'Email', $.data);
-query("SELECT Id, Name FROM Account WHERE Industry = 'Healthcare'");
+```bash
+// Show documentation for a get() function
+openfn docs http get
 ```
 
 ## Best Practices
@@ -327,9 +381,10 @@ query("SELECT Id, Name FROM Account WHERE Industry = 'Healthcare'");
 
 ### 3. Performance
 
-- Use lazy state (`$`) for cleaner, more efficient code
-- Minimize state mutations
+- Use lazy state (`$`) for cleaner code
+- Break complex workflows into multiple workflows
 - Clean up final state to reduce data size
+- Process data in batches
 
 ### 4. Debugging
 
@@ -343,16 +398,6 @@ query("SELECT Id, Name FROM Account WHERE Industry = 'Healthcare'");
 - Never hardcode credentials - use `$.configuration`
 - Clean sensitive data from final state
 - OpenFn automatically scrubs `configuration` and functions from logs
-
-## Common Pitfalls to Avoid
-
-1. **Nested Operations** - Always keep operations at top level
-2. **Forgetting to Return State** - Every callback must return state
-3. **Reading State Too Early** - Use `$` or arrow functions
-4. **Not Handling Errors** - Add error handling for production code
-5. **Bloated Final State** - Clean up state before job completion
-6. **Hardcoded Values** - Use configuration or state for dynamic values
-7. **Complex Callbacks** - Break complex logic into multiple operations
 
 ## Natural Language Support
 
@@ -417,23 +462,11 @@ fn(state => {
 });
 ```
 
-## When to Ask for Clarification
-
-Ask users for more information when:
-
-- The adaptor to use is unclear
-- Field mappings are ambiguous
-- Error handling requirements are unspecified
-- Data transformation logic is complex
-- Credential configuration is needed
-- The workflow design is unclear
-
 ## Resources
 
 - Full documentation: https://docs.openfn.org
 - Adaptor library: https://docs.openfn.org/adaptors
 - Community forum: https://community.openfn.org
 - CLI documentation: https://docs.openfn.org/documentation/cli
-
-Remember: Write clear, maintainable code that follows OpenFn patterns. When in
-doubt, break complex operations into smaller, simpler steps.
+- Job writing guide:
+  https://docs.openfn.org/documentation/jobs/job-writing-guide
