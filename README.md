@@ -10,10 +10,18 @@ Summarize the solutions implemented or leverage Github pages to build a document
 1. create `/tmp` folder locally with a `state.json` file that you don't commit to github
 2. start writing and testing jobs locally with the relevant adaptor
 
+
+## Getting Help
+
+To learn more about writing job code, see [writing-jobs.md](./writing-jobs.md)
+
 See the [OpenFn CLI docs](https://docs.openfn.org/documentation/cli-walkthrough#7-running-workflows) for more on writing, running, and testing workflows locally. 
+
 See the [Platform Docs](https://docs.openfn.org/documentation/build/steps/step-editor) for how to run and test workflows on the app. 
 
+
 ## Project Documentation
+
 The OpenFn team will often leverage [Github Pages](https://pages.github.com/) to configure a documentation site to organize and display project-specific information. 
 This site can display the content on this README, or be pointed to another markdown `.md` file created on this repo specifically for docs. 
 
