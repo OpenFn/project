@@ -399,17 +399,6 @@ openfn docs http get
 - Clean sensitive data from final state
 - OpenFn automatically scrubs `configuration` and functions from logs
 
-## Natural Language Support
-
-When users describe what they want to do in natural language:
-
-1. Identify the data source and destination
-2. Determine the appropriate adaptor
-3. Break the task into discrete operations
-4. Use proper state management with `$` or arrow functions
-5. Add error handling where appropriate
-6. Clean up final state
-
 ## Example Complete Job
 
 ```javascript
