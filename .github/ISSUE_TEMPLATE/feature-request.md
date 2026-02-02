@@ -74,24 +74,6 @@ data to help the dev validate the implementation.
 
 `Name of Toggl project`
 
-## Pre-Development Checklist
-
-Before handling this issue to a developer, ensure the following items are
-checked:
-
-- [ ] Credentials: Ensure all necessary credentials are available and
-      documented.
-- [ ] Sample Input Data: Ensure sample input data is provided and linked.
-- [ ] PII: Verify if any Personally Identifiable Information (PII) is involved
-      and ensure proper handling.
-- [ ] Collections: Confirm if collections are needed and pre-configure with
-      sample data if required.
-- [ ] Mapping Spec: Ensure mapping specifications are complete and linked.
-- [ ] API Docs: Ensure all relevant API documentation is linked.
-- [ ] Workflow Diagrams: Ensure workflow diagrams are complete and linked.
-- [ ] VPN Access: Ensure VPN Access is provided if required to run the workflow
-- [ ] Toggl: Ensure the Toggl project name is provided.
-
 ## QA Acceptance Criteria
 
 Before marking this issue as ready for review, complete the following checklist:
@@ -124,3 +106,21 @@ Before marking this issue as ready for review, complete the following checklist:
 - [ ] Documented test data used (with IDs for reuse)
 - [ ] Documented any known issues or limitations
 - [ ] Documented assumptions made during implementation
+
+## Pre-Development Checklist
+
+Before handling this issue to a developer, ensure the following items are
+checked:
+
+- [ ] Credentials: Ensure all necessary credentials are available and
+      documented.
+- [ ] Sample Input Data: Ensure sample input data is provided and linked.
+- [ ] PII: Verify if any Personally Identifiable Information (PII) is involved
+      and ensure proper handling.
+- [ ] Collections: Confirm if collections are needed and pre-configure with
+      sample data if required.
+- [ ] Mapping Spec: Ensure mapping specifications are complete and linked.
+- [ ] API Docs: Ensure all relevant API documentation is linked.
+- [ ] Workflow Diagrams: Ensure workflow diagrams are complete and linked.
+- [ ] VPN Access: Ensure VPN Access is provided if required to run the workflow
+- [ ] Toggl: Ensure the Toggl project name is provided.
