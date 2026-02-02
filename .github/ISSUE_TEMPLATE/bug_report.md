@@ -46,6 +46,39 @@ data to help the dev validate the implementation.
 
 `Name of Toggl project`
 
+## QA Acceptance Criteria
+
+Before marking this issue as ready for review, complete the following checklist:
+
+### 1. Spec Validation
+- [ ] All jobs from the specification are implemented in the workflow YAML
+- [ ] Job logic matches specification requirements (conditional paths, transformations)
+- [ ] Edge cases are handled (empty arrays, null values, missing optional fields)
+
+### 2. Technical Validation
+- [ ] Workflow executes successfully with test data
+- [ ] Each job works correctly in isolation
+- [ ] `state.data` is cleaned up at the end of each job (only data needed for next job is retained)
+- [ ] Null/undefined scenarios are handled gracefully
+
+### 3. Target System Verification
+- [ ] Logged into target system and manually verified created/updated records
+- [ ] Verified field-level mapping accuracy for all mapped fields (not just record existence)
+- [ ] Confirmed relationships/references are correctly established
+- [ ] Checked audit trails (if available)
+
+### 4. Test Coverage
+- [ ] Tested new record creation
+- [ ] Tested update of existing records (if applicable)
+- [ ] Tested duplicate handling
+- [ ] Tested with missing optional fields
+- [ ] Tested with missing required fields (fails gracefully)
+
+### 5. Documentation
+- [ ] Documented test data used (with IDs for reuse)
+- [ ] Documented any known issues or limitations
+- [ ] Documented assumptions made during implementation
+
 ## Pre-Development Checklist
 
 Before handling this issue to a developer, ensure the following items are
