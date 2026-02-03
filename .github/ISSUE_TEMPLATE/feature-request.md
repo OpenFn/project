@@ -124,3 +124,4 @@ checked:
 - [ ] Workflow Diagrams: Ensure workflow diagrams are complete and linked.
 - [ ] VPN Access: Ensure VPN Access is provided if required to run the workflow
 - [ ] Toggl: Ensure the Toggl project name is provided.
+- [ ] Test Suite: A suite of test that the developer needs to run before handing the issue over to QA
