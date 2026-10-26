@@ -33,7 +33,6 @@ This work is delivered [PLACEHOLDER: under the X initiative / for the Ministry o
 - [How the workflows work](#how-the-workflows-work)
 - [Systems and connections](#systems-and-connections)
 - [Data mappings](#data-mappings)
-- [Schedules and triggers](#schedules-and-triggers)
 - [Administration](#administration)
 - [Troubleshooting](#troubleshooting)
 - [For developers](#for-developers)
@@ -46,8 +45,8 @@ This work is delivered [PLACEHOLDER: under the X initiative / for the Ministry o
 
 ## Who should read this
 
-- **Programme and [PLACEHOLDER: health / operations] staff** who want to understand what each workflow does and when it runs: read the [system overview](#system-overview), [the workflows](#the-workflows), and [schedules](#schedules-and-triggers).
-- **Developers and integrators** who maintain or adapt the workflows: also read [how the workflows work](#how-the-workflows-work), [data mappings](#data-mappings), and [for developers](#for-developers). The per-workflow READMEs carry field mappings, system codes, and error handling.
+- **Programme and [PLACEHOLDER: health / operations] staff** who want to understand what each workflow does and when it runs: read the [system overview](#system-overview) and [the workflows](#the-workflows), then **Part 1** of each workflow's README (overview, diagram, schedule, and how to run).
+- **Developers and integrators** who maintain or adapt the workflows: also read [how the workflows work](#how-the-workflows-work) and [for developers](#for-developers), then **Part 2** of each workflow's README (steps, mapping, configuration, error handling, and troubleshooting).
 
 ---
 
@@ -87,41 +86,23 @@ OpenFn sits in the middle. It reads from [PLACEHOLDER: source systems] and write
 
 ## The workflows
 
-<!-- Summary table first, so readers can scan. Then one subsection per workflow. -->
-| Workflow | What it does | Details |
-|---|---|---|
-| **WF1** | [PLACEHOLDER: one-line description in plain language] | [README](docs/workflows/wf1-[PLACEHOLDER]/README.md) |
-| **WF2** | [PLACEHOLDER] | [README](docs/workflows/wf2-[PLACEHOLDER]/README.md) |
+<!-- Keep this to a summary. Diagrams, mappings, and run instructions go in each workflow's own README. -->
+| Workflow | What it does | Trigger | Status | Details |
+|---|---|---|---|---|
+| **WF1** | [PLACEHOLDER: one-line description in plain language] | [PLACEHOLDER: every 6 hours, 00:00, 06:00, 12:00, 18:00 UTC] | [PLACEHOLDER: Live / In testing / Blocked] | [README](docs/workflows/wf1-[PLACEHOLDER]/README.md) |
+| **WF2** | [PLACEHOLDER] | [PLACEHOLDER: on demand (webhook)] | [PLACEHOLDER] | [README](docs/workflows/wf2-[PLACEHOLDER]/README.md) |
 
 <!-- Note any dependencies between workflows, e.g. "WF2A dispatches to WF2B" or "P1 must run before P2". -->
 [PLACEHOLDER: How the workflows relate to each other, if at all.]
 
-<!-- Copy this block once per workflow. -->
-### WF1: [PLACEHOLDER: Source] → [PLACEHOLDER: Destination]
-
-[PLACEHOLDER: Two or three sentences on what this workflow does and why it exists.]
-
-**Key design points**
-
-- [PLACEHOLDER: e.g. Record IDs are derived from the source ID, so re-runs update rather than duplicate.]
-- [PLACEHOLDER: e.g. Records with an unmapped facility are held back and retried on the next run.]
-
-<!-- Export the workflow's BPMN diagram from Lucidchart as a PNG and save it under docs/images/. -->
-![WF1 BPMN diagram](docs/images/wf1-bpmn.png)
-
-*Figure: WF1 business process. [Source in Lucidchart]([PLACEHOLDER: Lucidchart link])*
-
-**Trigger:** [PLACEHOLDER: e.g. cron `0 */6 * * *`, or webhook].
-
-**Status:** [PLACEHOLDER: Live / In testing / Blocked on X].
-
-**Full documentation:** [docs/workflows/wf1-[PLACEHOLDER]/README.md](docs/workflows/wf1-[PLACEHOLDER]/README.md)
+Cron triggers run in **UTC** unless a different timezone is set on the trigger. [PLACEHOLDER: Add the local offset, e.g. 00:00 UTC is 03:00 EAT (UTC+3).] Any workflow can also be started by hand from the OpenFn app with the **Run** button.
 
 ---
 
 ## How the workflows work
 
 <!-- Describe patterns shared across workflows once here, so per-workflow docs stay short. Delete any that do not apply. -->
+These patterns are shared across the workflows. Each workflow's README describes its own variations.
 
 ### Picking up only what changed
 
@@ -154,13 +135,7 @@ Credentials are not kept in this repository. They live in the OpenFn app under *
 
 ## Data mappings
 
-<!-- Point to where field-level mappings live. Keep detailed tables in per-workflow READMEs or the mapping workbook. -->
-Every workflow validates required fields before writing to a destination system. Field-by-field mappings live in:
-
-| Workflow | Mapping reference |
-|---|---|
-| WF1 | [PLACEHOLDER: link to mapping spec / workbook / Collection key] |
-| WF2 | [PLACEHOLDER] |
+Each workflow's README has a Mapping section with a link to its full mapping spec. [PLACEHOLDER: link to the project mapping workbook, if there is one.]
 
 <!-- Optional: if workflows share identifiers across systems, list them. -->
 <!--
@@ -170,19 +145,6 @@ Every workflow validates required fields before writing to a destination system.
 |---|---|---|
 | [PLACEHOLDER] | `[PLACEHOLDER]` | [PLACEHOLDER] |
 -->
-
----
-
-## Schedules and triggers
-
-| Workflow | Trigger type | Schedule | Fires at (UTC) | Enabled |
-|---|---|---|---|---|
-| WF1 | cron | [PLACEHOLDER: every 6 hours] (`0 */6 * * *`) | [PLACEHOLDER: 00:00, 06:00, 12:00, 18:00] | [PLACEHOLDER: yes / no] |
-| WF2 | webhook | on demand | n/a | [PLACEHOLDER] |
-
-Cron triggers run in **UTC** unless a different timezone is set on the trigger. [PLACEHOLDER: Add the local offset, e.g. 00:00 UTC is 03:00 EAT (UTC+3).]
-
-Any workflow can also be started by hand from the OpenFn app with the **Run** button.
 
 ---
 
@@ -245,8 +207,11 @@ Common issues are below. Problems specific to one workflow are in that workflow'
 │       ├── workflow.json
 │       └── *.js        # one file per step
 ├── docs/               # project documentation (safe from CLI pulls)
-│   ├── images/
-│   └── workflows/      # one README per workflow
+│   ├── images/         # project-wide images, e.g. solution architecture
+│   └── workflows/
+│       └── wf1-[name]/ # one folder per workflow, named after its workflows/ folder
+│           ├── README.md
+│           └── *.png   # this workflow's BPMN and other images
 ├── sample-data/        # example payloads for local testing
 ├── writing-jobs.md     # guide to writing OpenFn job code
 └── claude.md           # instructions for AI-assisted job writing
@@ -301,7 +266,7 @@ openfn workflows/[workflow-name]/workflow.json
 
 ## Team contacts
 
-Please do not commit personal emails. Use role-based aliases or link to a project directory.
+This is the only contacts list for the project; the workflow READMEs link back here. Please do not commit personal emails. Use role-based aliases or link to a project directory.
 
 | Role | Name / team | Contact |
 |---|---|---|
